@@ -19,10 +19,10 @@ describe("routes : static", () => {
 
   describe("GET /macro", () => {
 
-    it("should return status code of 200", (done) => {
+    it("should return status code of 200 and have 'Welcome to Bloccit' in the body of response", () => {
       request.get(base + 'macro', (err, res, body) => {
         expect(res.statusCode).toBe(200);
-        expect(body).toBe("polo");
+        expect(body).toContain("Welcome to Bloccit");
         done();
       });
     });

@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req,res,next) => {
-  res.send("Welcome to Bloccit");
-});
+const staticController = require("../controllers/staticController");
+router.get("/", staticController.index);
 
 router.get('/macro', (req,res,next) => {
   res.send("polo");
