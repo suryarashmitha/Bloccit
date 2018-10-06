@@ -1,30 +1,73 @@
-const Topic = require("./models").Topic;
+const Topic = require('./models').Topic;
+
+const Post = require('./models').Post;
 
 module.exports = {
+    getAllTopics(callback){
+        return Topic.all()
+        .then((topics) => {
+            callback(null, topics);
+        })
+        .catch((err) => {
+            callback(err);
+        });
+    },
 
-//#1We define a function called getAllTopics with a parameter called callback. In  getAllTopics, return the result of calling all on the Sequelize model which will return all records in the topics table
-  getAllTopics(callback){
-    return Topic.all()
+    getTopic(id, callback){
+      return Topic.findById(id/*, {
+        include: [{
+          model: Post,
+          as: 'posts'
+        }]
+      }*/)
+        .then((topic) => {
+          callback(null, topic);
+        })
+        .catch((err) => {
+          callback(err);
+        })
+      },
 
-//#2
-    .then((topics) => {
-      callback(null, topics);
-    })
-    .catch((err) => {
-      callback(err);
-    })
-  },
+    addTopic(newTopic, callback){
+        return Topic.create({
+            title: newTopic.title,
+            description: newTopic.description
+        })
+        .then((topic) => {
+            callback(null, topic);
+        })
+        .catch((err) => {
+            callback(err);
+        })
+    },
 
-  addTopic(newTopic, callback){
-      return Topic.create({
-        title: newTopic.title,
-        description: newTopic.description
-      })
-      .then((topic) => {
-        callback(null, topic);
-      })
-      .catch((err) => {
-        callback(err);
-      })
-    }
+    deleteTopic(id, callback){
+        return Topic.destroy({
+          where: {id}
+        })
+        .then((topic) => {
+          callback(null, topic);
+        })
+        .catch((err) => {
+          callback(err);
+        })
+      },
+
+    updateTopic(id, updatedTopic, callback){
+        return Topic.findById(id)
+        .then((topic) => {
+            if(!topic){
+                return callback("Topic not found");
+          }
+          topic.update(updatedTopic, {
+            fields: Object.keys(updatedTopic)
+          })
+          .then(() => {
+            callback(null, topic);
+          })
+          .catch((err) => {
+            callback(err);
+          });
+        });
+      }
 }

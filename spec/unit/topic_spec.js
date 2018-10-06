@@ -1,9 +1,12 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require('../../src/db/models').Topic;
 const Post = require("../../src/db/models").Post;
- describe('Topic', () => {
-     beforeEach((done) => {
-         this.topic;
+
+describe('Topic', () => {
+
+    beforeEach((done) => {
+
+        this.topic;
         this.post;
         sequelize.sync({forc: true}).then((res) => {
             Topic.create({
@@ -12,10 +15,12 @@ const Post = require("../../src/db/models").Post;
             })
             .then((topic) => {
                 this.topic = topic;
-                 Post.create({
+
+                Post.create({
                     title: 'My first visit to Proxima Centauri b',
                     body: 'I saw some rocks.',
-                     topicId: this.topic.id
+
+                    topicId: this.topic.id
                 })
                 .then((post) => {
                     this.post = post;

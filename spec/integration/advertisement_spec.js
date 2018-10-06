@@ -123,4 +123,4 @@ const Advertisement = require("../../src/db/models").Advertisement;
       });
     });
   });
-}); 
+});
