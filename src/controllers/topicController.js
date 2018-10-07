@@ -18,7 +18,9 @@ module.exports = {
       title: req.body.title,
       description: req.body.description
     };
+    console.log("1****************");
     topicQueries.addTopic(newTopic, (err, topic) => {
+      console.log(err);
       if(err){
         res.redirect(500, '/topics/new');
       } else {

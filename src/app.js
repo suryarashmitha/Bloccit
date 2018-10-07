@@ -2,11 +2,13 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const app = express();
 
+
+app.use(express.static(__dirname + '/assets'));
+
+
+
 const appConfig = require ("./config/main-config.js");
 const routeConfig = require("./config/route-config.js");
-// app.use(express.cookieParser('your secret here'));
-// app.use(express.session());
-
 
 app.use(cookieParser("sfsfsfslkjflksflsdnflks"))
 
