@@ -6,8 +6,6 @@ module.exports = {
         req.checkBody("body", "must be at least 10 characters in length").isLength({min: 10});
         }
     const errors = req.validationErrors();
-    console.log("2***********");
-    console.log(errors);
     if(errors) {
         req.flash("error", errors);
             return res.redirect(303, req.headers.referer)

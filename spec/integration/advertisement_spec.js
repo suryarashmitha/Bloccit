@@ -3,6 +3,7 @@ const server = require("../../src/server");
 const base = "http://localhost:3000/advertisements/";
 const sequelize = require("../../src/db/models/index").sequelize;
 const Advertisement = require("../../src/db/models").Advertisement;
+
  describe("routes : advertisements", () => {
 
   beforeEach((done) => {

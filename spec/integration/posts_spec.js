@@ -70,7 +70,7 @@ describe("routes : posts", () => {
         });
       });
     });
-    /*it("should not create a new post that fails validations", (done) => {
+    it("should not create a new post that fails validations", (done) => {
       const options = {
         url: `${base}/${this.topic.id}/posts/create`,
         form: {
@@ -89,7 +89,7 @@ describe("routes : posts", () => {
           done();
         });
       });
-    });*/
+    });
   });
   describe("GET /topics/:topicId/posts/:id", () => {
     it("should render a view with the selected post", (done) => {
