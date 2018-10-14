@@ -93,8 +93,7 @@ describe("routes : votes", () => {
                console.log(err);
                done();
              });
-           }
-         );
+           });
        });
 
      });
@@ -114,6 +113,56 @@ describe("routes : votes", () => {
            done();
          }
        );
+     });
+
+     describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
+      beforeEach((done) => {
+        Vote.create({           // create a vote on `this.post`
+          value: -1,
+          postId: this.post.id,
+          userId: this.user.id
+        })
+        .then((vote) => {
+          Post.create({         // create a new post
+            title: "Dress code on Proxima b",
+            body: "Spacesuit, space helmet, space boots, and space gloves",
+            topicId: this.topic.id,
+            userId: this.user.id
+          })
+          .then((newPost) => {
+            vote.setPost(newPost);
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+        });
+      });
+
+       it("should not allow double voting for an user", (done) => {
+         const options = {
+           url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+         };
+         request.get(options,
+           (err, res, body) => {
+               Vote.all({
+                 where: {
+                   userId: this.user.id,
+                   postId: this.post.id
+                 }
+               })
+               .then((votes) => {               // confirm that an upvote was created
+                 expect(votes.length).toBe(1);
+                 done();
+               })
+             .catch((err) => {
+               console.log(err);
+               done();
+             });
+           }
+         );
+       });
      });
 
      describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {

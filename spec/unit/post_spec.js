@@ -2,12 +2,14 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require('../../src/db/models').Topic;
 const Post = require("../../src/db/models").Post;
 const User = require("../../src/db/models").User;
+const Vote = require("../../src/db/models").Vote;
 
 describe('Post', () => {
     beforeEach((done) => {
         this.topic;
         this.post;
         this.user;
+        this.vote;
         sequelize.sync({force: true}).then((res) => {
           User.create({
          email: "starman@tesla.com",
@@ -99,40 +101,156 @@ describe('Post', () => {
         });
     });
     describe("#setUser()", () => {
-
      it("should associate a post and a user together", (done) => {
-
        User.create({
          email: "ada@example.com",
          password: "password"
        })
        .then((newUser) => {
-
          expect(this.post.userId).toBe(this.user.id);
-
          this.post.setUser(newUser)
          .then((post) => {
-
            expect(this.post.userId).toBe(newUser.id);
            done();
-
          });
        })
      });
-
    });
 
    describe("#getUser()", () => {
-
      it("should return the associated topic", (done) => {
-
        this.post.getUser()
        .then((associatedUser) => {
          expect(associatedUser.email).toBe("starman@tesla.com");
          done();
        });
-
      });
-
    });
+
+   describe('#getPoints', () => {
+       it('should return points', (done) => {
+         Vote.create({
+           value: -1,
+           postId: this.post.id,
+           userId: this.user.id
+         })
+         .then((vote) => {
+           this.vote = vote;     // store it
+           Post.create({         // create a new post
+             title: "Dress code on Proxima b",
+             body: "Spacesuit, space helmet, space boots, and space gloves",
+             topicId: this.topic.id,
+             userId: this.user.id
+           })
+           .then((newPost) => {
+             this.vote.setPost(newPost)              // update post reference for vote
+             .then(() => {
+
+               Post.findById(newPost.id, {
+                  include: [
+                    {model: Vote, as: "votes"}
+                  ]
+               })
+                .then((post) => {
+                   expect(post.getPoints()).toBe(-1);
+                   done();
+                 })
+                 .catch((err) => {
+                   console.log(err);
+                   done();
+                 })
+             });
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
+         });
+       });
+   });
+
+   describe('#hasDownvoteFor', () => {
+       it('should return true', (done) => {
+         Vote.create({
+           value: -1,
+           postId: this.post.id,
+           userId: this.user.id
+         })
+         .then((vote) => {
+           this.vote = vote;     // store it
+           Post.create({         // create a new post
+             title: "Dress code on Proxima b",
+             body: "Spacesuit, space helmet, space boots, and space gloves",
+             topicId: this.topic.id,
+             userId: this.user.id
+           })
+           .then((newPost) => {
+             this.vote.setPost(newPost)              // update post reference for vote
+             .then(() => {
+
+               Post.findById(newPost.id, {
+                  include: [
+                    {model: Vote, as: "votes"}
+                  ]
+               })
+                .then((post) => {
+                   expect(post.hasDownvoteFor(this.user.id)).toBe(true);
+                   done();
+                 })
+                 .catch((err) => {
+                   console.log(err);
+                   done();
+                 })
+             });
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
+         });
+       });
+   });
+
+   describe('#hasUpvoteFor', () => {
+       it('should return true', (done) => {
+         Vote.create({
+           value: 1,
+           postId: this.post.id,
+           userId: this.user.id
+         })
+         .then((vote) => {
+           this.vote = vote;     // store it
+           Post.create({         // create a new post
+             title: "Dress code on Proxima b",
+             body: "Spacesuit, space helmet, space boots, and space gloves",
+             topicId: this.topic.id,
+             userId: this.user.id
+           })
+           .then((newPost) => {
+             this.vote.setPost(newPost)              // update post reference for vote
+             .then(() => {
+
+               Post.findById(newPost.id, {
+                  include: [
+                    {model: Vote, as: "votes"}
+                  ]
+               })
+                .then((post) => {
+                   expect(post.hasUpvoteFor(this.user.id)).toBe(true);
+                   done();
+                 })
+                 .catch((err) => {
+                   console.log(err);
+                   done();
+                 })
+             });
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
+         });
+       });
+   });
+
 });

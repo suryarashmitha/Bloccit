@@ -65,78 +65,78 @@ describe("Vote", () => {
   });
 
   //suits will begin here
-  describe("#create()", () => {
+  // #1
+       describe("#create()", () => {
 
-   // #2
-       it("should create an upvote on a post for a user", (done) => {
+     // #2
+         it("should create an upvote on a post for a user", (done) => {
 
-   // #3
-         Vote.create({
-           value: 1,
-           postId: this.post.id,
-           userId: this.user.id
-         })
-         .then((vote) => {
+     // #3
+           Vote.create({
+             value: 1,
+             postId: this.post.id,
+             userId: this.user.id
+           })
+           .then((vote) => {
 
-   // #4
-           expect(vote.value).toBe(1);
-           expect(vote.postId).toBe(this.post.id);
-           expect(vote.userId).toBe(this.user.id);
-           done();
+     // #4
+             expect(vote.value).toBe(1);
+             expect(vote.postId).toBe(this.post.id);
+             expect(vote.userId).toBe(this.user.id);
+             done();
 
-         })
-         .catch((err) => {
-           console.log(err);
-           done();
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
          });
-       });
 
-   // #5
-       it("should create a downvote on a post for a user", (done) => {
-         Vote.create({
-           value: -1,
-           postId: this.post.id,
-           userId: this.user.id
-         })
-         .then((vote) => {
-           expect(vote.value).toBe(-1);
-           expect(vote.postId).toBe(this.post.id);
-           expect(vote.userId).toBe(this.user.id);
-           done();
+     // #5
+         it("should create a downvote on a post for a user", (done) => {
+           Vote.create({
+             value: -1,
+             postId: this.post.id,
+             userId: this.user.id
+           })
+           .then((vote) => {
+             expect(vote.value).toBe(-1);
+             expect(vote.postId).toBe(this.post.id);
+             expect(vote.userId).toBe(this.user.id);
+             done();
 
-         })
-         .catch((err) => {
-           console.log(err);
-           done();
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
          });
+
+     // #6
+         it("should not create a vote without assigned post or user", (done) => {
+           Vote.create({
+             value: 1
+           })
+           .then((vote) => {
+
+            // the code in this block will not be evaluated since the validation error
+            // will skip it. Instead, we'll catch the error in the catch block below
+            // and set the expectations there
+
+             done();
+
+           })
+           .catch((err) => {
+
+             expect(err.message).toContain("Vote.userId cannot be null");
+             expect(err.message).toContain("Vote.postId cannot be null");
+             done();
+
+           })
+         });
+
        });
-
-   // #6
-       it("should not create a vote without assigned post or user", (done) => {
-         Vote.create({
-           value: 1
-         })
-         .then((vote) => {
-
-          // the code in this block will not be evaluated since the validation error
-          // will skip it. Instead, we'll catch the error in the catch block below
-          // and set the expectations there
-
-           done();
-
-         })
-         .catch((err) => {
-
-           expect(err.message).toContain("Vote.userId cannot be null");
-           expect(err.message).toContain("Vote.postId cannot be null");
-           done();
-
-         })
-       });
-
-     });
-
-     describe("#setUser()", () => {
+       describe("#setUser()", () => {
 
       it("should associate a vote and a user together", (done) => {
 
@@ -195,68 +195,66 @@ describe("Vote", () => {
        });
 
      });
-
      describe("#setPost()", () => {
 
-     it("should associate a post and a vote together", (done) => {
+  it("should associate a post and a vote together", (done) => {
 
-       Vote.create({           // create a vote on `this.post`
-         value: -1,
-         postId: this.post.id,
-         userId: this.user.id
-       })
-       .then((vote) => {
-         this.vote = vote;     // store it
+    Vote.create({           // create a vote on `this.post`
+      value: -1,
+      postId: this.post.id,
+      userId: this.user.id
+    })
+    .then((vote) => {
+      this.vote = vote;     // store it
 
-         Post.create({         // create a new post
-           title: "Dress code on Proxima b",
-           body: "Spacesuit, space helmet, space boots, and space gloves",
-           topicId: this.topic.id,
-           userId: this.user.id
-         })
-         .then((newPost) => {
+      Post.create({         // create a new post
+        title: "Dress code on Proxima b",
+        body: "Spacesuit, space helmet, space boots, and space gloves",
+        topicId: this.topic.id,
+        userId: this.user.id
+      })
+      .then((newPost) => {
 
-           expect(this.vote.postId).toBe(this.post.id); // check vote not associated with newPost
+        expect(this.vote.postId).toBe(this.post.id); // check vote not associated with newPost
 
-           this.vote.setPost(newPost)              // update post reference for vote
-           .then((vote) => {
+        this.vote.setPost(newPost)              // update post reference for vote
+        .then((vote) => {
 
-             expect(vote.postId).toBe(newPost.id); // ensure it was updated
-             done();
+          expect(vote.postId).toBe(newPost.id); // ensure it was updated
+          done();
 
-           });
-         })
-         .catch((err) => {
-           console.log(err);
-           done();
-         });
-       });
-     });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
 
-   });
+});
 
 // #2
-   describe("#getPost()", () => {
+describe("#getPost()", () => {
 
-     it("should return the associated post", (done) => {
-       Vote.create({
-         value: 1,
-         userId: this.user.id,
-         postId: this.post.id
-       })
-       .then((vote) => {
-         this.comment.getPost()
-         .then((associatedPost) => {
-           expect(associatedPost.title).toBe("My first visit to Proxima Centauri b");
-           done();
-         });
-       })
-       .catch((err) => {
-         console.log(err);
-         done();
-       });
-     });
+  it("should return the associated post", (done) => {
+    Vote.create({
+      value: 1,
+      userId: this.user.id,
+      postId: this.post.id
+    })
+    .then((vote) => {
+      this.comment.getPost()
+      .then((associatedPost) => {
+        expect(associatedPost.title).toBe("My first visit to Proxima Centauri b");
+        done();
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      done();
+    });
+  });
 
-   });
-
+});
 });
