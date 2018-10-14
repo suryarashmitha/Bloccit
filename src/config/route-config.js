@@ -8,6 +8,7 @@ module.exports = {
         const topicRoutes = require('../routes/topics');
         const advertisementRoutes = require('../routes/advertisements');
         const flairRoutes = require('../routes/flairs');
+        const favoriteRoutes = require("../routes/favorites");
 
         if(process.env.NODE_ENV === "test") {
             const mockAuth = require('../../spec/support/mock-auth.js');
@@ -22,5 +23,6 @@ module.exports = {
         app.use(flairRoutes);
         app.use(commentRoutes);
         app.use(voteRoutes);
+        app.use(favoriteRoutes);
     }
 }
