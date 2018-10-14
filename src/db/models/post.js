@@ -39,13 +39,23 @@ module.exports = (sequelize, DataTypes) => {
      foreignKey: "userId",
      as: "favorites"
   });
+
+  Post.afterCreate((post, callback) => {
+    return models.Vote.create({
+      userId: post.userId,
+      postId: post.id,
+      value: 1
+    });
+  });
+
   Post.afterCreate((post, callback) => {
     return models.Favorite.create({
       userId: post.userId,
       postId: post.id
     });
   });
-   Post.hasMany(models.Vote, {
+
+  Post.hasMany(models.Vote, {
     foreignKey: "postId",
     as: "votes"
   });

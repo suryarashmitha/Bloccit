@@ -152,7 +152,7 @@ describe('Post', () => {
                   ]
                })
                 .then((post) => {
-                   expect(post.getPoints()).toBe(-1);
+                   expect(post.getPoints()).toBe(0);
                    done();
                  })
                  .catch((err) => {

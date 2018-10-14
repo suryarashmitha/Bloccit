@@ -72,6 +72,23 @@ describe("routes : votes", () => {
      });
 
      describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
+       beforeEach((done) => {    // before each suite in this context
+         Vote.destroy({            // look for the vote, should not find one.
+           where: {
+             userId: this.user.id,
+             postId: this.post.id
+           }
+         })
+         .then((vote) => {
+           done();
+         })
+         .catch((err) => {
+           console.log(err);
+           done();
+         });
+
+       });
+
 
        it("should not create a new vote", (done) => {
          const options = {

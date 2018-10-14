@@ -5,14 +5,14 @@
   </head>
   <body>
     <% include ../static/partials/navbar.ejs %>
-    <main class="container">
+    <main class="container" style = 'max-width: 600px'>
       <% include ../static/partials/messages.ejs %>
       <div style="display: flex; align-items:center;">
       <% if(currentUser) { %>
         <% include ../votes/voting.ejs %>
       <% } %>
       <h1><%= post.title %></h1>
-      <div/>
+    </div>
       <a href="/topics/<%= post.topicId %>" class="btn btn-outline-info btn-sm">Back to Topic </a>
         <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>/edit" class="btn btn-warning">Edit</a>
         <form style="display:initial" action="/topics/<%= post.topicId %>/posts/<%= post.id %>/destroy" method="post">
@@ -28,7 +28,7 @@
           <% include ../comments/new.ejs %>
         <% } %>
       </section>
-      <section id="comment-list">
+      <section id="comment-list" style='width:200%'>
         <% if(post.comments) { %>
           <% post.comments.forEach((comment) => { %>
             <%- include("../comments/show.ejs", {comment}) %>
