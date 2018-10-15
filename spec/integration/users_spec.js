@@ -3,8 +3,9 @@ const server = require("../../src/server");
 const base = "http://localhost:3000/users/";
 const User = require("../../src/db/models").User;
 const Topic = require("../../src/db/models").Topic;
- const Post = require("../../src/db/models").Post;
- const Comment = require("../../src/db/models").Comment;
+const Post = require("../../src/db/models").Post;
+const Comment = require("../../src/db/models").Comment;
+const Favorite = require("../../src/db/models").Favorite;
 const sequelize = require("../../src/db/models/index").sequelize;
 
 
@@ -13,6 +14,7 @@ describe("GET /users/:id", () => {
        this.user;
        this.post;
        this.comment;
+       this.favorite;
 
        User.create({
          email: "starman@tesla.com",
@@ -45,7 +47,13 @@ describe("GET /users/:id", () => {
            })
            .then((res) => {
              this.comment = res;
-             done();
+             Favorite.create({
+               postId: this.post.id,
+               userId: this.user.id
+             }).then((res) => {
+               this.favorite = res;
+               done();
+             })
            })
          })
        })
@@ -60,6 +68,16 @@ describe("GET /users/:id", () => {
        });
 
      });
+
+     it("should present a list of Favourite posts a user has created", (done) => {
+       request.get(`${base}${this.user.id}`, (err, res, body) => {
+         expect(body).toContain("Snowball Fighting");
+         expect(body).toContain("Favourites (2)")
+         done();
+       });
+
+     });
+
    });
 
 describe("routes : users", () => {
